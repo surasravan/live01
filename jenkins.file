@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('take code from github') {
+            steps {
+                git branch: 'main', url: 'https://github.com/surasravan/live01.git'
+            }
+        }
+         stage('build the code') {
+            steps {
+               sh "mvn clean package"
+            }
+        }
+         stage("deploy") {
+            steps {
+            deploy adapters: [tomcat9(credentialsId: 'sravan', path: '', url: 'http://13.201.92.62:8080/')], contextPath: 'ec2-user', war: '**/*.war'
+            }
+                
+        }
+        
+    }
+
+}
